@@ -42,14 +42,16 @@ int main()
 #ifdef _WIN32
         __asm cpuid;
 #elif __linux__
-        __asm__("cpuid");
+        // clobbered eax etc. covers their 64bit counterparts as well
+        __asm__ volatile("CPUID"::: "eax","ebx","ecx","edx", "memory");
 #endif
         time2 = __rdtsc();
         sum += time2 - time1;
     }
 
     sum = sum / avg;
-    printf("%llu\n", sum);
+    
+    printf("Ticks on average: %llu\n", sum);
 
     if(sum > 500){
         puts("Probably a VM");
