@@ -13,18 +13,18 @@
          * https://web.archive.org/web/20180916070251/http://www.mcs.anl.gov/~kazutomo/rdtsc.html
          */
         #ifdef __i386__
-        static __inline__ unsigned long long __rdtsc(void)
+        static __inline__ unsigned long long int __rdtsc(void)
         {
             unsigned long long int x;
             __asm__ __volatile__ (".byte 0x0f, 0x31" : "=A" (x));
             return x;
         }
         #elif __x86_64__
-        static __inline__ unsigned long long __rdtsc(void)
+        static __inline__ unsigned long long int __rdtsc(void)
         {
             unsigned hi, lo;
             __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
-            return ( (unsigned long long)lo)|( ((unsigned long long)hi)<<32 );
+            return ( (unsigned long long int)lo)|( ((unsigned long long int)hi)<<32 );
         }
         #endif
     #endif
@@ -32,9 +32,8 @@
 
 
 
-int main()
-{
-    unsigned long long time1, time2, sum = 0;
+int main(){
+    unsigned long long int time1, time2, sum = 0;
     const unsigned char avg = 100;
     
     for (int i = 0; i < avg; i++){
@@ -43,7 +42,7 @@ int main()
         __asm cpuid;
 #elif __linux__
         // clobbered eax etc. covers their 64bit counterparts as well
-        __asm__ volatile("CPUID"::: "eax","ebx","ecx","edx", "memory");
+        __asm__ volatile("CPUID"::: "eax", "ebx", "ecx", "edx", "memory");
 #endif
         time2 = __rdtsc();
         sum += time2 - time1;
